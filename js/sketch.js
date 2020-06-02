@@ -1,6 +1,9 @@
 let scoreLeft = 0;
 let scoreRight = 0;
 
+let paddleLeft;
+let paddleRight;
+
 let ball = {
     x: 0,
     y: 0,
@@ -9,19 +12,6 @@ let ball = {
     radius: 40
 }
 
-let paddleLeft = {
-    x: 30,
-    y: 0,
-    width: 20,
-    height: 150
-}
-
-let paddleRight = {
-    x: 0,
-    y: 0,
-    width: 20,
-    height: 150
-}
 
 
 function setup() {
@@ -31,31 +21,33 @@ function setup() {
 
     ball.x = width / 2;
     ball.y = height / 2;
+    
+    paddleLeft = new Paddle(30, height / 2, 30, 150, 'vertical', true, '');
+    paddleRight = new Paddle(width-30, height / 2, 30, 150, 'vertical', true, '');
 
-    paddleRight.x = width - 30;
 }
 
 function draw() {
     background(0);
-    fill(255);
-    moveBall();
-    bounceBall();
-    drawElements();
+    drawStadium();
+    paddleLeft.show();  
+    paddleLeft.move();
+    paddleRight.show();
+    paddleRight.move();
 }
 
-function drawElements() {
-    paddleRight.y = mouseY;
-    paddleLeft.y = mouseX;
-    rect(paddleLeft.x, paddleLeft.y, paddleLeft.width, paddleLeft.height);
-    rect(paddleRight.x, paddleRight.y, paddleRight.width, paddleRight.height);
-    ellipse(ball.x, ball.y, ball.radius);
+function drawStadium() {
+    
+    // 
+
+    // Score
     textSize(100);
     textAlign(RIGHT)
     text(scoreLeft, width / 2 - 40, 100);
     textAlign(LEFT)
-
     text(scoreRight, width/2 + 40 , 100);
 
+    // Net
     for (let y = 0; y < height; y = y + 30) {
         rect(width / 2, y, 20, 20);
     }
@@ -108,6 +100,54 @@ function resetBall() {
     ball.speedX = -ball.speedX;
     ball.speedY = random(-2, 2);
 
+}
+
+class Paddle { 
+    constructor(_x, _y, _width, _height, _direction, _mouse, _key) { 
+        this.x = _x;
+        this.y = _y;
+        this.width = _width;
+        this.height = _height;
+        this.direction = _direction;
+        this.mouse = _mouse;
+        this.key = _key;
+    }
+    show() { 
+        rect(this.x, this.y, this.width, this.height);
+    }
+
+    move() { 
+        if (this.direction === 'horizontal') {
+            if (this.mouse) {
+                this.x = mouseX;
+            } else if (keyIsDown(this.key)){ 
+                this.x += 1;
+            }
+        } else if (this.direction === 'vertical') { 
+            if (this.mouse) {
+                this.y = mouseY;
+            } else if (keyIsDown(this.key)) { 
+                this.y+=1;
+            }
+        }
+    }
+}
+
+class Ball {
+    constructor(_x, _y, _radius) {
+        this.x = _x;
+        this.y = _y;
+        this.radius = _radius;
+    }
+    show() { 
+
+    }
+    move() { 
+
+    }
+    bounce() { 
+
+    }
 }
 
 function windowResized() {
